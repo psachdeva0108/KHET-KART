@@ -43,7 +43,11 @@ export function getFairPriceInsights(farmerId) {
   return api.get(`/farmers/${farmerId}/products`).then((r) => r.data.map((listing) => {
     const range = MARKET_PRICE_RANGES.find((x) => x.name === listing.name)
     if (!range) return null
-    const suggestedLow = range.low + 1, suggestedHigh = range.high - 2
+    // Keep the suggested fair range inside the actual market range and
+    // never allow the lower bound to exceed the upper bound.
+    const spread = Math.max(0, range.high - range.low)
+    const suggestedLow = Math.ceil(range.low + spread * 0.25)
+    const suggestedHigh = Math.floor(range.high - spread * 0.25)
     return { productId: listing.id, name: listing.name, marketLow: range.low, marketHigh: range.high, suggestedLow, suggestedHigh, yourPrice: listing.price, withinFairRange: listing.price >= suggestedLow && listing.price <= suggestedHigh }
   }).filter(Boolean))
 }

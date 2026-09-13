@@ -67,13 +67,13 @@ INSERT INTO "sqlite_sequence" VALUES('products',170);
 INSERT INTO "sqlite_sequence" VALUES('order_items',12);
 
 -- Basic FPO operational demo data
-INSERT INTO pooled_lots VALUES ('PL-2401',30,'Onion','A',21.0,'ready_for_pickup','[{"farmerId":12,"quantity":700,"unit":"kg"},{"farmerId":15,"quantity":500,"unit":"kg"}]','{"quantityVerified":true,"qualityVerified":true,"packagingVerified":true}','{"transportPartner":"AgriMove Logistics","destination":"Azadpur Mandi, Delhi","deliveryDeadline":"2026-09-18","status":"Scheduled"}','2026-09-12');
-INSERT INTO pooled_lots VALUES ('PL-2402',30,'Wheat','A',29.0,'pending_verification','[{"farmerId":12,"quantity":900,"unit":"kg"},{"farmerId":21,"quantity":650,"unit":"kg"}]','{"quantityVerified":true,"qualityVerified":false,"packagingVerified":true}',NULL,'2026-09-12');
-INSERT INTO pooled_lots VALUES ('PL-2403',30,'Potato','A+',18.5,'dispatched','[{"farmerId":12,"quantity":600,"unit":"kg"},{"farmerId":18,"quantity":700,"unit":"kg"}]','{"quantityVerified":true,"qualityVerified":true,"packagingVerified":true}','{"transportPartner":"Kisan Freight","destination":"Okhla Wholesale Market, Delhi","deliveryDeadline":"2026-09-16","status":"In Transit"}','2026-09-12');
+INSERT INTO pooled_lots VALUES ('PL-2401',30,'Onion','A',23.0,'ready_for_pickup','[{"farmerId":12,"quantity":300,"unit":"kg"},{"farmerId":15,"quantity":300,"unit":"kg"}]','{"quantityVerified":true,"qualityVerified":true,"packagingVerified":true}','{"transportPartner":"AgriMove Logistics","destination":"Azadpur Mandi, Delhi","deliveryDeadline":"2026-09-18","status":"Scheduled"}','2026-09-12');
+INSERT INTO pooled_lots VALUES ('PL-2402',30,'Wheat','A',31.0,'pending_verification','[{"farmerId":12,"quantity":500,"unit":"kg"},{"farmerId":21,"quantity":400,"unit":"kg"}]','{"quantityVerified":true,"qualityVerified":false,"packagingVerified":true}',NULL,'2026-09-12');
+INSERT INTO pooled_lots VALUES ('PL-2403',30,'Potato','A+',20.0,'dispatched','[{"farmerId":12,"quantity":500,"unit":"kg"},{"farmerId":18,"quantity":400,"unit":"kg"}]','{"quantityVerified":true,"qualityVerified":true,"packagingVerified":true}','{"transportPartner":"Kisan Freight","destination":"Okhla Wholesale Market, Delhi","deliveryDeadline":"2026-09-16","status":"Delivered"}','2026-09-12');
 INSERT INTO demand_requests VALUES ('DEM-2601','Onion','Delhi Retail Buyer',1200.0,'kg',20.0,23.0,'Azadpur, Delhi','2026-09-18','open','2026-09-12 19:55:29');
 INSERT INTO demand_requests VALUES ('DEM-2602','Wheat','North India Foods',2000.0,'kg',27.0,31.0,'Delhi NCR','2026-09-20','open','2026-09-12 19:55:29');
 INSERT INTO demand_requests VALUES ('DEM-2603','Potato','FreshMart Wholesale',1500.0,'kg',17.0,20.0,'Gurugram, Haryana','2026-09-17','open','2026-09-12 19:55:29');
 INSERT INTO demand_requests VALUES ('DEM-2604','Rice','Institutional Buyer',1000.0,'kg',37.0,42.0,'Noida, Uttar Pradesh','2026-09-22','open','2026-09-12 19:55:29');
-INSERT INTO logistics_routes VALUES ('LOG-2401','ORD1006','["Sonipat","Nashik"]','Azadpur Mandi, Delhi','AgriMove Logistics',58.0,130.0,91.0,'Scheduled','2026-09-12 19:55:29');
-INSERT INTO logistics_routes VALUES ('LOG-2402','ORD1007','["Sonipat","Karnal"]','Okhla Wholesale Market, Delhi','Kisan Freight',72.0,165.0,88.0,'In Transit','2026-09-12 19:55:29');
+INSERT INTO logistics_routes VALUES ('LOG-2401','ORD1006','["Sonipat"]','Azadpur Mandi, Delhi','AgriMove Logistics',38.0,75.0,91.0,'Scheduled','2026-09-12 19:55:29');
+INSERT INTO logistics_routes VALUES ('LOG-2402','ORD1007','["Sonipat"]','Okhla Wholesale Market, Delhi','Kisan Freight',52.0,105.0,88.0,'Delivered','2026-09-12 19:55:29');
 COMMIT;
