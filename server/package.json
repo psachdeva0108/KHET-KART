@@ -1,0 +1,7 @@
+{
+  "name": "khet2kart-api",
+  "private": true,
+  "type": "module",
+  "scripts": { "start": "node --experimental-sqlite src/server.js", "dev": "node --watch --experimental-sqlite src/server.js" },
+  "engines": { "node": ">=22.5.0" }
+}
