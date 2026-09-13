@@ -46,18 +46,14 @@ export default function About() {
   return (
     <Container maxWidth="lg" sx={{ py: 6 }}>
       <Typography variant="h3" sx={{ fontSize: '2.2rem', mb: 2 }}>
-        About KHET2KART
+        About KHET२KART
       </Typography>
       <Typography variant="h6" sx={{ mb: 2, fontWeight: 700 }}>
         A transparent, demand-driven agricultural marketplace connecting consumers and bulk
         buyers directly with verified farmers and FPOs.
       </Typography>
       <Typography color="text.secondary" sx={{ mb: 5, maxWidth: 760 }}>
-        Built for Smart India Hackathon 2026 (SIH 26033), KHET2KART removes unnecessary
-        intermediary layers by making pricing transparent and comparable. Farmers control their
-        listing prices, consumers can identify the best available price and quality, FPOs can
-        aggregate supply for larger orders, and transparent logistics improve the supply chain —
-        with no private negotiation anywhere in the flow.
+       KHET२KART is a technology-driven agricultural marketplace that connects farmers, consumers, FPOs, and logistics providers through a transparent and efficient digital platform. By enabling direct trade, the platform helps farmers reach wider markets, secure fair pricing, and reduce dependency on intermediaries. KHET२KART also empowers buyers with access to quality produce, competitive prices, and reliable supply chain support.
       </Typography>
 
       <Grid container spacing={3}>

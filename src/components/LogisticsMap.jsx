@@ -45,7 +45,7 @@ const ROUTE = [
   [COLLECTION_HUB.lat, COLLECTION_HUB.lng],
 ]
 
-const LOOP_MS = 8000
+const LOOP_MS = 20000
 const EARTH_RADIUS_KM = 6371
 
 function haversineKm([lat1, lng1], [lat2, lng2]) {

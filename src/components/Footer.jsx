@@ -17,7 +17,7 @@ export default function Footer() {
         >
           <Box>
             <Typography variant="h6" sx={{ fontWeight: 800 }}>
-              KHET2KART
+              KHET२KART
             </Typography>
             <Typography variant="body2" sx={{ opacity: 0.85, maxWidth: 420 }}>
               A transparent, demand-driven agricultural marketplace connecting consumers and
@@ -40,7 +40,7 @@ export default function Footer() {
           </Stack>
         </Stack>
         <Typography variant="caption" sx={{ display: 'block', opacity: 0.7, mt: 3 }}>
-          © {new Date().getFullYear()} KHET2KART. SIH 26033 prototype — demo data only.
+          © {new Date().getFullYear()} KHET२KART. All Copyright Deserved
         </Typography>
       </Container>
     </Box>

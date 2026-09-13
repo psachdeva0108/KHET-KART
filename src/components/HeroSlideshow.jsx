@@ -10,10 +10,7 @@ import Box from '@mui/material/Box'
 //
 // Local state only — no external libraries, no persisted state.
 const DEFAULT_SLIDES = [
-  {
-    src: '/hero-images/01-smart-farming.png',
-    alt: 'Smart farming and farmers in a green agricultural field',
-  },
+  
   {
     src: '/hero-images/02-farmer-field.png',
     alt: 'Farmer standing in a green vegetable field',

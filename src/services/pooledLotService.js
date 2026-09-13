@@ -4,7 +4,14 @@ import { api } from './api'
 // plus any created in this browser, with any verification/logistics updates
 // merged in — frontend simulation only, persisted to localStorage (§82).
 export function getPooledLots(fpoId) {
-  return api.get(`/fpos/${fpoId}/pooled-lots`).then((response) => response.data)
+  // Never call the API with an undefined FPO id.
+  // This prevents requests such as /fpos/undefined/pooled-lots
+  // while the authenticated user is still being restored.
+  if (fpoId === undefined || fpoId === null || fpoId === '') {
+    return Promise.resolve([])
+  }
+
+  return api.get(`/fpos/${encodeURIComponent(fpoId)}/pooled-lots`).then((response) => response.data)
 }
 
 // product-spec §38/§39: "Create Pooled Lot" — aggregates selected farmer

@@ -16,6 +16,7 @@ import StatusBadge from '../../components/StatusBadge'
 import RankedShareBars from '../../components/RankedShareBars'
 import LoadingState from '../../components/LoadingState'
 import { getDashboardStats } from '../../services/fpoService'
+import { useAuth } from '../../context/AuthContext'
 import { getPooledLots } from '../../services/pooledLotService'
 import { getDemand } from '../../services/demandService'
 import { getOrders } from '../../services/orderService'
@@ -43,20 +44,27 @@ function KpiCard({ label, value, formatter }) {
 }
 
 export default function FpoAnalytics() {
+  const { user } = useAuth()
   const [stats, setStats] = useState(null)
   const [lots, setLots] = useState([])
   const [demand, setDemand] = useState([])
   const [orders, setOrders] = useState([])
 
   useEffect(() => {
-    Promise.all([getDashboardStats(), getPooledLots(), getDemand(), getOrders()])
+    const fpoId = user?.linkedId
+    if (fpoId === undefined || fpoId === null || fpoId === '') return
+
+    Promise.all([getDashboardStats(), getPooledLots(fpoId), getDemand(), getOrders()])
       .then(([nextStats, nextLots, nextDemand, nextOrders]) => {
         setStats(nextStats)
         setLots(nextLots)
         setDemand(nextDemand)
         setOrders(nextOrders)
       })
-  }, [])
+      .catch((error) => {
+        console.error('Failed to load FPO analytics:', error)
+      })
+  }, [user?.linkedId])
 
   const categoryDemand = useMemo(() => {
     const totals = new Map()

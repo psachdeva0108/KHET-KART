@@ -58,7 +58,7 @@ export default function MiddlemanSavingsBanner() {
             You've saved {formatCurrency(totalSaved)} by buying direct from farmers
           </Typography>
           <Typography sx={{ fontSize: '12.5px', color: 'text.secondary' }}>
-            ~{percentSaved}% below typical middleman/mandi prices, based on a sample basket
+            ~{percentSaved}% below typical middleman/mandi prices, based on past orders
           </Typography>
         </Box>
       </Stack>
