@@ -53,7 +53,11 @@ export default function About() {
         buyers directly with verified farmers and FPOs.
       </Typography>
       <Typography color="text.secondary" sx={{ mb: 5, maxWidth: 760 }}>
-       KHET2KART is a technology-driven agricultural marketplace that connects farmers, consumers, FPOs, and logistics providers through a transparent and efficient digital platform. By enabling direct trade, the platform helps farmers reach wider markets, secure fair pricing, and reduce dependency on intermediaries. KHET2KART also empowers buyers with access to quality produce, competitive prices, and reliable supply chain support.
+        Built for Smart India Hackathon 2026 (SIH 26033), KHET2KART removes unnecessary
+        intermediary layers by making pricing transparent and comparable. Farmers control their
+        listing prices, consumers can identify the best available price and quality, FPOs can
+        aggregate supply for larger orders, and transparent logistics improve the supply chain —
+        with no private negotiation anywhere in the flow.
       </Typography>
 
       <Grid container spacing={3}>

@@ -68,7 +68,7 @@ export default function BrandLogo({
             whiteSpace: 'nowrap',
           }}
         >
-          KHET२KART
+          KHET2KART
         </Typography>
       )}
     </Stack>

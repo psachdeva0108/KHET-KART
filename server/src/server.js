@@ -22,7 +22,24 @@ function hash(password, salt = randomBytes(16).toString('hex')) { return `${salt
 function validPassword(password, stored) { const [salt, digest] = stored.split(':'); const candidate = hash(password, salt).split(':')[1]; return timingSafeEqual(Buffer.from(candidate), Buffer.from(digest)) }
 function tokenFor(user) { const payload = Buffer.from(JSON.stringify({ id: user.id, role: user.role, exp: Date.now() + 7 * 86400000 })).toString('base64url'); return `${payload}.${createHmac('sha256', secret).update(payload).digest('base64url')}` }
 function currentUser(req) { const token = req.headers.authorization?.replace('Bearer ', ''); if (!token) return null; const [payload, signature] = token.split('.'); const expected = createHmac('sha256', secret).update(payload).digest('base64url'); if (!signature || !timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) return null; const value = json(Buffer.from(payload, 'base64url').toString()); return value?.exp > Date.now() ? one('SELECT id,name,email,role,linked_id AS linkedId,is_premium AS isPremium,premium_renewal_date AS premiumRenewalDate,premium_auto_renew AS premiumAutoRenew,consumer_location AS consumerLocation FROM users WHERE id = ?', value.id) : null }
-function send(res, status, body) { res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Access-Control-Allow-Origin': process.env.CLIENT_ORIGIN || 'http://localhost:5173', 'Access-Control-Allow-Headers': 'Content-Type, Authorization', 'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, OPTIONS' }); res.end(JSON.stringify(body)) }
+const allowedOrigins = (process.env.CLIENT_ORIGIN || 'http://localhost:5173')
+  .split(',')
+  .map((origin) => origin.trim().replace(/\/$/, ''))
+  .filter(Boolean)
+
+function send(res, status, body, req = null) {
+  const request = req || res._khetRequest
+  const requestOrigin = request?.headers?.origin?.replace(/\/$/, '')
+  const corsOrigin = requestOrigin && allowedOrigins.includes(requestOrigin) ? requestOrigin : allowedOrigins[0]
+  res.writeHead(status, {
+    'Content-Type': 'application/json; charset=utf-8',
+    'Access-Control-Allow-Origin': corsOrigin,
+    'Vary': 'Origin',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, OPTIONS'
+  })
+  res.end(JSON.stringify(body))
+}
 async function body(req) { let raw = ''; for await (const part of req) raw += part; try { return raw ? JSON.parse(raw) : {} } catch { throw new Error('Invalid JSON request body') } }
 function requireUser(req, res) { const user = currentUser(req); if (!user) { send(res, 401, { message: 'Authentication required' }); return null } return user }
 function initialize() {
@@ -52,10 +69,12 @@ function farmerRows(where = '', values = []) { return all(`SELECT u.id,u.name,u.
 function fpoRows(where = '', values = []) { return all(`SELECT u.id,u.name,u.email,fp.fpo_name AS name,fp.representative,fp.location,fp.member_count AS memberCount FROM users u JOIN fpo_profiles fp ON fp.user_id=u.id ${where}`, ...values).map((row) => ({ ...row, location: json(row.location, {}) })) }
 function pooledLotRows(fpoId) { return all(`SELECT * FROM pooled_lots ${fpoId ? 'WHERE fpo_id=?' : ''} ORDER BY created_at DESC`, ...(fpoId ? [fpoId] : [])).map((row) => { const contributions=json(row.contributions,[]).map((c)=>{ const farmer=one('SELECT u.name,fp.location FROM users u LEFT JOIN farmer_profiles fp ON fp.user_id=u.id WHERE u.id=?',c.farmerId); return {...c,farmerName:farmer?.name,farmerLocation:json(farmer?.location,{})} }); return { id:row.id,fpoId:row.fpo_id,productName:row.product_name,qualityGrade:row.quality_grade,salePrice:row.sale_price,status:row.status,contributions,verification:json(row.verification,{}),logistics:json(row.logistics,null),createdAt:row.created_at } }) }
 initialize()
-const server = createServer(async (req, res) => { try {
-  if (req.method === 'OPTIONS') return send(res, 204, {})
+const server = createServer(async (req, res) => { res._khetRequest = req; try {
+  if (req.method === 'OPTIONS') return send(res, 204, {}, req)
   const url = new URL(req.url, `http://${req.headers.host}`); const path = url.pathname
-  if (req.method === 'GET' && path === '/api/health') return send(res, 200, { ok: true })
+  if (req.method === 'GET' && (path === '/' || path === '/health' || path === '/api/health')) {
+    return send(res, 200, { ok: true, service: 'khet2kart-api', apiBase: '/api' })
+  }
   if (req.method === 'POST' && path === '/api/auth/login') { const input = await body(req); const user = one('SELECT * FROM users WHERE lower(email)=lower(?) OR aadhaar=?', input.email || '', String(input.aadhaar || '').replace(/\D/g, '')); if (!user || !validPassword(input.password || '', user.password_hash)) return send(res, 401, { message: 'Invalid Aadhaar/email or password' }); const safe = { id:user.id,name:user.name,email:user.email,role:user.role,linkedId:user.linked_id,isPremium:Boolean(user.is_premium),premiumRenewalDate:user.premium_renewal_date || null,premiumAutoRenew:Boolean(user.premium_auto_renew),consumerLocation:json(user.consumer_location,null) }; return send(res, 200, { user:safe, token:tokenFor(safe) }) }
   if (req.method === 'POST' && path === '/api/auth/register') {
     const input = await body(req)

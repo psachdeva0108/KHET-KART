@@ -90,7 +90,7 @@ export default function Register() {
   return (
     <Container maxWidth="sm" sx={{ py: 6 }}>
       <Typography variant="h4" sx={{ mb: 3 }}>
-        Join KHET२KART
+        Join KHET2KART
       </Typography>
 
       <Paper variant="outlined">
@@ -114,6 +114,7 @@ export default function Register() {
                   label="Farm Name"
                   value={form.farmName}
                   onChange={updateField('farmName')}
+                  required
                 />
               </>
             )}
