@@ -11,8 +11,24 @@ export function searchFarmersByQuery(query) {
     return farmers.filter((f) => [f.name, f.farmName, f.location?.city, f.location?.state].some((v) => String(v || '').toLowerCase().includes(q)))
   })
 }
-export function getDashboardStats() {
-  return api.get('/farmers').then((r) => ({ totalProduceListedKg: r.data.reduce((s, f) => s + Number(f.totalProduceListedKg || 0), 0), availableInventoryKg: r.data.reduce((s, f) => s + Number(f.availableInventoryKg || 0), 0), activeOrders: 0, completedOrders: 0, totalEarnings: 0, pendingPayments: 0 }))
+export function getDashboardStats(farmerId) {
+  return Promise.all([api.get(`/farmers/${farmerId}/products`), getOrderLinesForFarmerId(farmerId)]).then(([productsResponse, lines]) => {
+    const listings = productsResponse.data
+    const availableInventoryKg = listings.reduce((sum, p) => sum + Number(p.availableQuantity || 0), 0)
+    const activeLines = lines.filter((line) => ACTIVE_ORDER_STATUSES.includes(line.status))
+    const deliveredLines = lines.filter((line) => line.status === 'delivered')
+    const sum = (items) => items.reduce((total, line) => total + Number(line.total || 0), 0)
+    const reservedKg = activeLines.reduce((total, line) => total + Number(line.quantity || 0), 0)
+    const soldKg = deliveredLines.reduce((total, line) => total + Number(line.quantity || 0), 0)
+    return {
+      totalProduceListedKg: availableInventoryKg + reservedKg + soldKg,
+      availableInventoryKg,
+      activeOrders: new Set(activeLines.map((line) => line.orderId)).size,
+      completedOrders: new Set(deliveredLines.map((line) => line.orderId)).size,
+      totalEarnings: sum(deliveredLines),
+      pendingPayments: sum(activeLines),
+    }
+  })
 }
 export function getInventorySummary(farmerId) {
   return Promise.all([api.get(`/farmers/${farmerId}/products`), getOrderLinesForFarmerId(farmerId)]).then(([productsResponse, lines]) => {
